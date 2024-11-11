@@ -27,9 +27,9 @@ function hasConsecutiveLetters(sequence) {
   }
   return false
 }
-
 // Endpoint POST /mutant
-app.post("/mutant/", (req, res) => {
+const restApiURL = process.env.REST_API_PUBLIC_URL
+app.post(restApiURL+"/mutant/", (req, res) => {
   const { dna } = req.body
   if (isMutant(dna)) {
     return res.status(200).json({ message: "Mutant detected" })
