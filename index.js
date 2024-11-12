@@ -27,17 +27,22 @@ function hasConsecutiveLetters(sequence) {
   }
   return false
 }
-// Endpoint POST /mutant
+// Endpoint para verificar si el ADN pertenece a un mutante
 const restApiURL = "https://meli-mutant-api.onrender.com"
 
-app.post(restApiURL+"/mutant/", (req, res) => {
-  const { dna } = req.body
-  if (isMutant(dna)) {
-    return res.status(200).json({ message: "Mutant detected" })
-  } else {
-    return res.status(403).json({ message: "Forbidden" })
+app.post(restApiURL + "/mutant", {
+  headers: {
+    "Content-Type": "application/json"
   }
-})
+}, (req, res) => {
+  const { dna } = req.body;
+
+  if (isMutant(dna)) {
+    return res.status(200).json({ message: "Mutant detected" });
+  } else {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+});
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
