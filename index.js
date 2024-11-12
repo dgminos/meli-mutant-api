@@ -28,7 +28,9 @@ function hasConsecutiveLetters(sequence) {
   return false
 }
 // Endpoint POST /mutant
+process.loadEnvFile()
 const restApiURL = process.env.REST_API_PUBLIC_URL
+
 app.post(restApiURL+"/mutant/", (req, res) => {
   const { dna } = req.body
   if (isMutant(dna)) {
