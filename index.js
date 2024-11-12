@@ -1,7 +1,10 @@
 import express from 'express'
 import cors from 'cors'
+import axios from 'axios'
 
 const app = express()
+
+// Middleware to enable CORS and parse JSON
 app.use(cors());
 app.use(express.json())
 
@@ -27,20 +30,34 @@ function hasConsecutiveLetters(sequence) {
   }
   return false
 }
-// Endpoint para verificar si el ADN pertenece a un mutante
-const restApiURL = "https://meli-mutant-api.onrender.com"
 
-app.post(restApiURL + "/mutant", {
-  headers: {
-    "Content-Type": "application/json"
-  }
-}, (req, res) => {
+
+process.loadEnvFile()
+const restApiURL = process.env.REST_API_URL
+// Endpoint to receive requests and check if the human is a mutant
+app.post("/mutant", async (req, res) => {
   const { dna } = req.body;
 
-  if (isMutant(dna)) {
-    return res.status(200).json({ message: "Mutant detected" });
-  } else {
-    return res.status(403).json({ message: "Forbidden" });
+  try {
+    // Make POST request to external API using axios
+    const response = await axios.post(restApiURL, { dna }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    // If a mutant was detected, return HTTP 200 OK
+    if (response.status === 200) {
+      return res.status(200).json({ message: "Mutant detected" });
+    }
+  } catch (error) {
+    
+// If not mutant or there was an error, return HTTP 403 Forbidden
+    if (error.response && error.response.status === 403) {
+      return res.status(403).json({ message: "Forbidden" });
+    } else {
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
   }
 });
 
