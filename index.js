@@ -28,7 +28,7 @@ function hasConsecutiveLetters(sequence) {
   return false
 }
 // Endpoint POST /mutant
-process.loadEnvFile()
+process.loadEnvFile("./.env")
 const restApiURL = process.env.REST_API_PUBLIC_URL
 
 app.post(restApiURL+"/mutant/", (req, res) => {
