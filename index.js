@@ -9,6 +9,10 @@ const app = express()
 app.use(cors());
 app.use(express.json())
 
+
+// URL of the external API to which the POST request will be made
+const restApiURL = "https://meli-mutant-api.onrender.com/mutant";
+
 // Function to check if a DNA is mutant's
 function isMutant(dna) {
   if (!dna || !Array.isArray(dna)) return false
@@ -32,31 +36,31 @@ function hasConsecutiveLetters(sequence) {
   return false
 }
 
-const restApiURL = process.env.REST_API_URL
+
 // Endpoint to receive requests and check if the human is a mutant
 app.post("/mutant", async (req, res) => {
   const { dna } = req.body;
 
   try {
-    // Make POST request to external API using axios
-    const response = await axios.post(restApiURL+ "/mutant", { dna }, {
-      headers: {
-        "Content-Type": "application/json"
+   
+// Check if the DNA sequence corresponds to a mutant
+    if (isMutant(dna)) {
+      // If it is a mutant, make the HTTP POST request to the external API
+      const response = await axios.post(restApiURL, { dna }, {
+        headers: { "Content-Type": "application/json" }
+      });
+      // If the response is 200 OK, it means it is a mutant
+      if (response.status === 200) {
+        return res.status(200).json({ message: "Mutant detected" });
       }
-    });
-
-    // If a mutant was detected, return HTTP 200 OK
-    if (response.status === 200) {
-      return res.status(200).json({ message: "Mutant detected" });
+    } else {
+      // If not a mutant, respond with Forbidden 403
+      return res.status(403).json({ message: "Forbidden: Not a mutant" });
     }
   } catch (error) {
-    
-// If not mutant or there was an error, return HTTP 403 Forbidden
-    if (error.response && error.response.status === 403) {
-      return res.status(403).json({ message: "Forbidden" });
-    } else {
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
+    // Error handling (external API request failed)
+    console.error('Error during mutation check:', error.message);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
