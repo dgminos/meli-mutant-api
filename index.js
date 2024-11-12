@@ -28,8 +28,7 @@ function hasConsecutiveLetters(sequence) {
   return false
 }
 // Endpoint POST /mutant
-process.loadEnvFile()
-const restApiURL = process.env.REST_API_PUBLIC_URL
+const restApiURL = "https://meli-mutant-api.onrender.com"
 
 app.post(restApiURL+"/mutant/", (req, res) => {
   const { dna } = req.body
