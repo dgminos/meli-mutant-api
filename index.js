@@ -39,7 +39,7 @@ app.post("/mutant", async (req, res) => {
 
   try {
     // Make POST request to external API using axios
-    const response = await axios.post(restApiURL, { dna }, {
+    const response = await axios.post(restApiURL+ "/mutant", { dna }, {
       headers: {
         "Content-Type": "application/json"
       }
