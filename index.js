@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import axios from 'axios'
@@ -31,8 +32,6 @@ function hasConsecutiveLetters(sequence) {
   return false
 }
 
-
-process.loadEnvFile()
 const restApiURL = process.env.REST_API_URL
 // Endpoint to receive requests and check if the human is a mutant
 app.post("/mutant", async (req, res) => {
